@@ -15,6 +15,13 @@ $(document).ready(function () {
 
     const eventInput = $("<textarea>");
     eventInput.addClass("col-md-8 description");
+    const events = JSON.parse(localStorage.getItem("events"));
+    if (events) {
+      const savedEvent = events[hour];
+      if (savedEvent) {
+        eventInput.val(savedEvent);
+      }
+    }
 
     const saveBtn = $("<button>");
     const saveIcon = $("<i>");
@@ -46,11 +53,17 @@ $(document).ready(function () {
   updateTimeBlock();
   setInterval(updateTimeBlock, 60000);
 
-  // Color-code each time block based on past, present, and future when the time block is viewed.
-
-  // Allow a user to enter an event when they click a time block
-
-  // Save the event in local storage when the save button is clicked in that time block.
-
-  // Persist events between refreshes of a page
+  $(".saveBtn").on("click", function () {
+    const eventInput = $(this).prev().val();
+    if (!eventInput) {
+      return;
+    }
+    const blockHour = $(this).parent().attr("id");
+    let events = JSON.parse(localStorage.getItem("events"));
+    if (!events) {
+      events = {};
+    }
+    events[blockHour] = eventInput;
+    localStorage.setItem("events", JSON.stringify(events));
+  });
 });
